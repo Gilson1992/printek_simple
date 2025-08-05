@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ordens_servico', function (Blueprint $table) {
+        Schema::create('ordem_servicos', function (Blueprint $table) {
             $table->id();
 
             // Chave estrangeira para a tabela 'clientes'
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ordens_servico');
+        Schema::dropIfExists('ordem_servicos');
     }
 };
