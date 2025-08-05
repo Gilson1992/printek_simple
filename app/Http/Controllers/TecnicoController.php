@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Equipamento;
+use App\Models\Tecnico;
 use Illuminate\Http\Request;
 
-class EquipamentoController extends Controller
+class TecnicoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $equipamentos = Equipamento::latest()->paginate(10); 
+        $tecnicos = Tecnico::latest()->paginate(10);
 
-        return view('equipamentos.index', compact('equipamentos')); 
+        return view('tecnicos.index', compact('tecnicos'));
     }
 
     /**

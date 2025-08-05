@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('itens_os', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ordem_servico_id')->constrained('ordens_servico')->onDelete('cascade');
+            $table->foreignId('ordem_servico_id')->constrained('ordem_servicos')->onDelete('cascade');
             $table->morphs('item'); // Magia do Laravel para ligar a produto OU serviço
             $table->integer('quantidade');
             $table->decimal('preco_unitario', 10, 2);

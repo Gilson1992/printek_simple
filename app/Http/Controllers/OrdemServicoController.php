@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrdemServico;
 use Illuminate\Http\Request;
 
 class OrdemServicoController extends Controller
@@ -11,7 +12,9 @@ class OrdemServicoController extends Controller
      */
     public function index()
     {
-        //
+        $ordensServico = OrdemServico::latest()->paginate(10); 
+
+        return view('ordens-servico.index', compact('ordensServico')); 
     }
 
     /**

@@ -19,7 +19,7 @@ return new class extends Migration
 
             // Cria a chave estrangeira para a tabela 'ordens_servico'
             $table->foreignId('ordem_servico_id')
-                  ->constrained('ordens_servico')
+                  ->constrained('ordem_servicos')
                   ->onDelete('cascade'); // Se uma OS for deletada, a assinatura também será
 
             // Define o tipo de assinatura (ex: 'cliente', 'tecnico')

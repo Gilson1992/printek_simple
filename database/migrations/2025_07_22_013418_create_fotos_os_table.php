@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('fotos_os', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ordem_servico_id')->constrained('ordens_servico')->onDelete('cascade');
+            $table->foreignId('ordem_servico_id')->constrained('ordem_servicos')->onDelete('cascade');
             $table->string('caminho_arquivo'); // Coluna para guardar o path da imagem
             $table->string('legenda')->nullable(); // Legenda opcional para a foto
             $table->timestamps();
