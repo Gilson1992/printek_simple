@@ -10,7 +10,18 @@ class Tecnico extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['nome', 'cnpj', 'contato', 'email', 'endereco', 'observacao', 'ativo'];
+    protected $fillable = [
+        'tecnico_id',
+        'nome', 
+        'contato', 
+        'disponibilidade',
+    ];
+
+     protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
 
     public function user()
     {

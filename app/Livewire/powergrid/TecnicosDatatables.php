@@ -2,7 +2,7 @@
 
 namespace App\Livewire\powergrid;
 
-use App\Models\Cliente;
+use App\Models\Tecnico;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
@@ -12,9 +12,9 @@ use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 
-final class ClientesDatatables extends PowerGridComponent
+final class TecnicosDatatables extends PowerGridComponent
 {
-    public string $tableName = 'clientes-datatables-blsall-table';
+    public string $tableName = 'tecnicos-datatables-ctjoxw-table';
 
     public function setUp(): array
     {
@@ -31,7 +31,7 @@ final class ClientesDatatables extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Cliente::query();
+        return Tecnico::query();
     }
 
     public function relationSearch(): array
@@ -43,13 +43,10 @@ final class ClientesDatatables extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
+            ->add('tecnico_id')
             ->add('nome')
-            ->add('cnpj')
             ->add('contato')
-            ->add('email')
-            ->add('endereco')
-            ->add('observacao')
-            ->add('ativo')
+            ->add('disponibilidade')
             ->add('created_at');
     }
 
@@ -57,11 +54,8 @@ final class ClientesDatatables extends PowerGridComponent
     {
         return [
             Column::make('Id', 'id'),
+            Column::make('Tecnico id', 'tecnico_id'),
             Column::make('Nome', 'nome')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Cnpj', 'cnpj')
                 ->sortable()
                 ->searchable(),
 
@@ -69,19 +63,7 @@ final class ClientesDatatables extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Email', 'email')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Endereco', 'endereco')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Observacao', 'observacao')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Ativo', 'ativo')
+            Column::make('Disponibilidade', 'disponibilidade')
                 ->sortable()
                 ->searchable(),
 
@@ -108,7 +90,7 @@ final class ClientesDatatables extends PowerGridComponent
         $this->js('alert('.$rowId.')');
     }
 
-    public function actions(Cliente $row): array
+    public function actions(Tecnico $row): array
     {
         return [
             Button::add('edit')
