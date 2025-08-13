@@ -12,6 +12,15 @@ final class ClienteTable extends PowerGridComponent
 {
     public string $tableName = 'cliente-table';
 
+    protected $listeners = [
+        'reloadPowergrid',
+    ];
+
+    public function reloadPowergrid()
+    {
+        $this->refresh();
+    }
+
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -22,6 +31,16 @@ final class ClienteTable extends PowerGridComponent
             PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
+        ];
+    }
+
+    public function header(): array
+    {
+        return [
+            Button::add('cadastrar-cliente')
+                ->slot('Cadastrar Cliente')
+                ->class('btn btn-primary mt-2')
+                ->openModal('modal.cliente', []),
         ];
     }
 

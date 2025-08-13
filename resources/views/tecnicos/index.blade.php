@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('adminlte::page')
 
 @section('title', 'Técnicos')
 
@@ -14,4 +14,8 @@
     <div class="dark:bg-gray-900 bg-white px-4 pt-3 rounded-md shadow-lg">
         <livewire:powergrid.tecnico-table/>
     </div>
+@stop
+
+@section('footer')
+    <livewire:components.copyright/>
 @stop
