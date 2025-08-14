@@ -3,7 +3,7 @@ const colors = require('tailwindcss/colors')
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
-        // './app/PowerGridThemes/TailwindHeaderFixed.php',
+        './app/Helpers/PowerGridThemes/TailwindHeaderFixed.php',
         './vendor/wire-elements/modal/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',

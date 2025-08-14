@@ -81,7 +81,6 @@ class Cliente extends ModalComponent
             if ($this->idCliente) {
                 ClienteModel::find($this->idCliente)->update($data);
                 $this->js("alertaSucesso('Cliente editado com sucesso!')");
-
             } else {
                 ClienteModel::create($data);
                 $this->js("alertaSucesso('Cliente cadastrado com sucesso!')");
@@ -89,7 +88,6 @@ class Cliente extends ModalComponent
 
             $this->dispatch('closeModal');
             $this->dispatch('reloadPowergrid');
-
         } catch (\Throwable $e) {
             $this->js("alertaFalha('Erro ao salvar cliente. Tente novamente.')");
         }

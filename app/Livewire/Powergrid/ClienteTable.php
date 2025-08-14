@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Powergrid;
 
+use App\Helpers\PowerGridThemes\TailwindHeaderFixed;
 use App\Models\Cliente;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -15,6 +16,11 @@ final class ClienteTable extends PowerGridComponent
     protected $listeners = [
         'reloadPowergrid',
     ];
+
+    public function customThemeClass(): ?string
+    {
+        return TailwindHeaderFixed::class;
+    }
 
     public function reloadPowergrid()
     {
