@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'Evoluta Printer',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,12 +63,12 @@ return [
     |
     */
 
-    'logo' => '&nbsp',
-    'logo_img' => 'vendor/adminlte/dist/img/logo.png',
-    'logo_img_class' => 'brand-image elevation-3',
+    'logo' => '<b>Evoluta Printer</b>',
+    'logo_img' => 'vendor/adminlte/dist/img/evoluta_printer_logo.png',
+    'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Logo Evoluta Printer',
+    'logo_img_alt' => 'Evoluta Printer',
 
     /*
     |--------------------------------------------------------------------------
@@ -86,7 +86,7 @@ return [
     'auth_logo' => [
         'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/logo.png',
+            // 'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
             'alt' => 'Auth Logo',
             'class' => '',
             'width' => 50,
@@ -113,11 +113,11 @@ return [
         'enabled' => true,
         'mode' => 'fullscreen',
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/logo.png',
+            'path' => 'vendor/adminlte/dist/img/evoluta_printer_logo.png',
             'alt' => 'Evoluta Printer Image',
             'effect' => 'animation__shake',
-            'width' => 80,
-            'height' => 80,
+            'width' => 60,
+            'height' => 60,
         ],
     ],
 
@@ -336,67 +336,14 @@ return [
         [
             'text' => 'Equipamentos',
             'route' => 'equipamentos.index',
-            'icon' => 'fas fa-fw fa-lock',
+            'icon' => 'fas fa-screwdriver',
         ],
         [
             'text' => 'Técnicos',
             'route' => 'tecnicos.index',
-            'icon' => 'fas fa-fw fa-lock',
+            'icon' => 'fas fa-headset',
         ],
-        // [
-        //     'text' => 'multilevel',
-        //     'icon' => 'fas fa-fw fa-share',
-        //     'submenu' => [
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //         ],
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //             'submenu' => [
-        //                 [
-        //                     'text' => 'level_two',
-        //                     'url' => '#',
-        //                 ],
-        //                 [
-        //                     'text' => 'level_two',
-        //                     'url' => '#',
-        //                     'submenu' => [
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url' => '#',
-        //                         ],
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url' => '#',
-        //                         ],
-        //                     ],
-        //                 ],
-        //             ],
-        //         ],
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //         ],
-        //     ],
-        // ],
-        // ['header' => 'labels'],
-        // [
-        //     'text' => 'important',
-        //     'icon_color' => 'red',
-        //     'url' => '#',
-        // ],
-        // [
-        //     'text' => 'warning',
-        //     'icon_color' => 'yellow',
-        //     'url' => '#',
-        // ],
-        // [
-        //     'text' => 'information',
-        //     'icon_color' => 'cyan',
-        //     'url' => '#',
-        // ],
+
     ],
 
     /*
@@ -551,5 +498,5 @@ return [
     |
     */
 
-    'livewire' => true,
+    'livewire' => false,
 ];

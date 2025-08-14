@@ -2,33 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model,SoftDeletes};
 
 class Cliente extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'nome',
-        'cnpj',
-        'contato',
-        'email',
-        'endereco',
-        'observacao',
-        'ativo',
-    ];
-
-    protected $casts = [
-        'ativo' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
-    ];
-
-    protected $attributes = [
-        'ativo' => true,
+        'nome', 'cnpj', 'contato', 'email', 'endereco', 'observacao', 'ativo'
     ];
 
     public function equipamentos()

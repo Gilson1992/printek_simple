@@ -1,11 +1,7 @@
 <?php
 
-use App\Http\Controllers\ClienteController;
-use App\Http\Controllers\EquipamentoController;
-use App\Http\Controllers\OrdemServicoController;
-use App\Http\Controllers\TecnicoController;
+use App\Http\Controllers\{ClienteController, EquipamentoController, OrdemServicoController, TecnicoController};
 use Illuminate\Support\Facades\Route;
-
 
 Route::get('/', function () {
     return view('dashboard');
