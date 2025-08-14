@@ -54,14 +54,29 @@ final class ClienteTable extends PowerGridComponent
         return PowerGrid::fields()
             ->add('id')
             ->add('nome')
-            ->add('cnpj')
-            ->add('contato')
+            ->add('cnpj', fn(Cliente $c) => 
+                strlen($c->cnpj ?? '') === 14
+                    ? substr($c->cnpj, 0, 2) . '.' .
+                    substr($c->cnpj, 2, 3) . '.' .
+                    substr($c->cnpj, 5, 3) . '/' .
+                    substr($c->cnpj, 8, 4) . '-' .
+                    substr($c->cnpj, 12, 2)
+                    : ($c->cnpj ?? '')
+            )
+            ->add('contato', fn(Cliente $c) =>
+                strlen($c->contato ?? '') === 11
+                    ? '(' . substr($c->contato, 0, 2) . ') ' .
+                    substr($c->contato, 2, 5) . '-' .
+                    substr($c->contato, 7, 4)
+                    : ($c->contato ?? '')
+            )
             ->add('email')
-            ->add('ativo')
             ->add('endereco')
             ->add('observacao')
             ->add('ativo')
-            ->add('created_at_formatted', fn (Cliente $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
+            ->add('created_at_formatted', fn (Cliente $model) => 
+                Carbon::parse($model->created_at)->format('d/m/Y')
+            );
     }
 
     public function columns(): array
@@ -89,12 +104,27 @@ final class ClienteTable extends PowerGridComponent
                 ->searchable()
                 ->sortable(),
             Column::make('Ativo?', 'ativo')
+                ->toggleable(
+                    true,
+                    'Sim',
+                    'Não'
+                )
                 ->searchable()
                 ->sortable(),
+
             Column::make('Criado Em', 'created_at_formatted', 'created_at')
                 ->searchable(),
             Column::action('Ação')
         ];
+    }
+
+    public function onUpdatedToggleable(string|int $id, string $field, string $value): void
+    {
+        Cliente::query()
+            ->find($id)
+            ->update([$field => $value]);
+
+        $this->dispatch('reloadPowergrid');
     }
 
     public function filters(): array
@@ -105,24 +135,46 @@ final class ClienteTable extends PowerGridComponent
             Filter::inputText('contato'),
             Filter::inputText('email'),
             Filter::datepicker('created_at_formatted', 'created_at'),
+            Filter::boolean('ativo', 'ativo')->label('Sim', 'Não'),
         ];
     }
 
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
-    {
-        $this->js('alert('.$rowId.')');
-    }
-
-    public function actions(Cliente $row): array
+    public function actions(Cliente $cliente): array
     {
         return [
             Button::add('editar-cliente')
-                ->slot('Edit: '.$row->id)
-                ->id()
-                ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
+                ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
+                ->class('btn btn-xs text-primary')
+                ->openModal('modal.cliente', [
+                    'id' => $cliente->id,
+                ])
+            ,
+            Button::add('deletar-cliente')
+                ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
+                ->class('btn btn-xs text-primary')
+                ->dispatch('delete', ['cliente' => $cliente])
+            ,
         ];
+    }
+
+    #[\Livewire\Attributes\On('delete')]
+    public function delete($cliente): void
+    {
+        $id = $cliente['id'];
+        $this->js("alertaDelete($id, 'Deseja excluir <b>{$cliente['nome']}</b>?', 'deleteRow')");
+    }
+
+    #[\Livewire\Attributes\On('deleteRow')]
+    public function deleteRow($id): void
+    {
+        $cliente = Cliente::find($id);
+        $result = $cliente->delete();
+
+        if ($result) {
+            $this->js("alertaSucesso('<b>$cliente->nome</b> excluído com sucesso')");
+        } else {
+            $this->js("alertaFalha('Erro ao excluir <b>Cliente</b>')");
+        }
     }
 
     /*

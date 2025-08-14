@@ -54,6 +54,7 @@
             @include('adminlte::partials.sidebar.right-sidebar')
         @endif
 
+        @include('sweetalert2::index')
     </div>
 @stop
 

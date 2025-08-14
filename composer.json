@@ -13,6 +13,7 @@
         "laravel/ui": "^4.6",
         "livewire/livewire": "^3.6",
         "power-components/livewire-powergrid": "^6.5",
+        "sweetalert2/laravel": "^0.1.0",
         "wire-elements/modal": "^3.0",
         "wireui/wireui": "^2.4"
     },

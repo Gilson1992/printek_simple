@@ -30,14 +30,18 @@
                         <div class="col-12">
                             <x-adminlte-input
                                 label="CNPJ"
-                                placeholder="xx.xxx.xxx/xxxx-xx"
+                                placeholder="__.___.___/____-__"
                                 wire:model.live="cnpj"
                                 name="cnpj"
                                 id="cnpj"
                                 type="text"
                                 igroup-size="md"
-                            >
-                            </x-adminlte-input>
+                                x-data
+                                x-init="Inputmask('99.999.999/9999-99').mask($el)"
+                                x-on:blur="$js.buscarCnpj($el.value)"
+                                x-on:input="($el.value.replace(/\D/g,'').length === 14) && $js.buscarCnpj($el.value)"
+                            />
+                            {{-- </x-adminlte-input> --}}
                         </div>
                     </div>
 
@@ -45,12 +49,14 @@
                         <div class="col-12">
                             <x-adminlte-input
                                 label="Contato"
-                                placeholder="(xx) xxxxx-xxxx"
+                                placeholder="(__) _____-____"
                                 wire:model.live="contato"
                                 name="contato"
                                 id="contato"
                                 type="text"
                                 igroup-size="md"
+                                x-data
+                                x-init="Inputmask('(99) 99999-9999').mask($el)"
                             >
                             </x-adminlte-input>
                         </div>
@@ -60,7 +66,7 @@
                         <div class="col-12">
                             <x-adminlte-input
                                 label="E-mail"
-                                placeholder="x@x.com"
+                                placeholder="cliente@dominio.com"
                                 wire:model.live="email"
                                 name="email"
                                 id="email"
@@ -75,7 +81,7 @@
                         <div class="col-12">
                             <x-adminlte-input
                                 label="Endereço"
-                                placeholder="..."
+                                placeholder=""
                                 wire:model.live="endereco"
                                 name="endereco"
                                 id="endereco"
@@ -90,7 +96,7 @@
                         <div class="col-12">
                             <x-adminlte-input
                                 label="Observação"
-                                placeholder="..."
+                                placeholder="Informações extras..."
                                 wire:model.live="observacao"
                                 name="observacao"
                                 id="observacao"
@@ -120,4 +126,79 @@
             </div>
         </div>
     </div>
+
+    @script
+        <script>
+            let isFetchingCnpj = false;
+
+            function toast({ icon = 'info', title = '' }) {
+                Swal.fire({
+                    icon,
+                    title,
+                    toast: true,
+                    position: 'top-end',
+                    timer: 2500,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+            }
+
+            $js('buscarCnpj', async (valor) => {
+                const raw = String(valor || '').replace(/\D/g, '');
+                if (raw.length !== 14 || isFetchingCnpj) return;
+
+                isFetchingCnpj = true;
+
+                Swal.fire({
+                    title: 'Consultando CNPJ...',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+
+                try {
+                    const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${raw}`);
+                    if (!res.ok) {
+                        Swal.close();
+                        toast({ icon: 'error', title: 'CNPJ não encontrado' });
+                        return;
+                    }
+
+                    const d = await res.json();
+
+                    const nomeAtual     = $wire.get('nome');
+                    const enderecoAtual = $wire.get('endereco');
+                    const emailAtual    = $wire.get('email');
+                    const contatoAtual  = $wire.get('contato');
+
+                    const nomeApi = d?.razao_social || d?.nome_fantasia || null;
+                    if (nomeApi && !nomeAtual) $wire.set('nome', nomeApi);
+
+                    const enderecoApi = [
+                        d?.logradouro, d?.numero, d?.bairro, d?.municipio, d?.uf, d?.cep
+                    ].filter(Boolean).join(', ');
+                    if (enderecoApi && !enderecoAtual) $wire.set('endereco', enderecoApi);
+
+                    if (d?.email && !emailAtual) $wire.set('email', d.email);
+
+                    const telApi = String(d?.ddd_telefone_1 || '').replace(/\D/g, '');
+                    if (telApi && !contatoAtual) $wire.set('contato', telApi);
+
+                    Swal.close();
+
+                    toast({ icon: 'success', title: 'Dados do CNPJ importados' });
+
+                } catch (e) {
+                    console.error('BrasilAPI CNPJ error:', e);
+                    Swal.close();
+                    toast({ icon: 'error', title: 'Erro ao consultar CNPJ' });
+                } finally {
+                    isFetchingCnpj = false;
+                }
+            });
+        </script>
+    @endscript
+
 </div>
