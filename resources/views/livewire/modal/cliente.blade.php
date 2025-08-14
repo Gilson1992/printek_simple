@@ -31,17 +31,15 @@
                             <x-adminlte-input
                                 label="CNPJ"
                                 placeholder="__.___.___/____-__"
-                                wire:model.live="cnpj"
+                                wire:model.defer="cnpj"
                                 name="cnpj"
                                 id="cnpj"
                                 type="text"
                                 igroup-size="md"
                                 x-data
                                 x-init="Inputmask('99.999.999/9999-99').mask($el)"
-                                x-on:blur="$js.buscarCnpj($el.value)"
                                 x-on:input="($el.value.replace(/\D/g,'').length === 14) && $js.buscarCnpj($el.value)"
                             />
-                            {{-- </x-adminlte-input> --}}
                         </div>
                     </div>
 
@@ -130,6 +128,7 @@
     @script
         <script>
             let isFetchingCnpj = false;
+            let lastFetchedCnpj = null;
 
             function toast({ icon = 'info', title = '' }) {
                 Swal.fire({
@@ -145,17 +144,27 @@
 
             $js('buscarCnpj', async (valor) => {
                 const raw = String(valor || '').replace(/\D/g, '');
-                if (raw.length !== 14 || isFetchingCnpj) return;
+                if (raw.length !== 14) return;
 
+                if (raw !== lastFetchedCnpj) {
+                    $wire.set('nome', '');
+                    $wire.set('endereco', '');
+                    $wire.set('email', '');
+                    $wire.set('contato', '');
+                }
+
+                if (isFetchingCnpj || raw === lastFetchedCnpj) return;
+
+                lastFetchedCnpj = raw;
                 isFetchingCnpj = true;
 
                 Swal.fire({
                     title: 'Consultando CNPJ...',
-                    allowOutsideClick: false,
+                    allowOutsideClick: true,
+                    allowEscapeKey: true,
+                    returnFocus: false,
                     showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    },
+                    didOpen: () => Swal.showLoading(),
                 });
 
                 try {
@@ -168,26 +177,20 @@
 
                     const d = await res.json();
 
-                    const nomeAtual     = $wire.get('nome');
-                    const enderecoAtual = $wire.get('endereco');
-                    const emailAtual    = $wire.get('email');
-                    const contatoAtual  = $wire.get('contato');
-
-                    const nomeApi = d?.razao_social || d?.nome_fantasia || null;
-                    if (nomeApi && !nomeAtual) $wire.set('nome', nomeApi);
+                    const nomeApi = d.razao_social || d.nome_fantasia || null;
+                    if (nomeApi) $wire.set('nome', nomeApi);
 
                     const enderecoApi = [
-                        d?.logradouro, d?.numero, d?.bairro, d?.municipio, d?.uf, d?.cep
+                        d.logradouro, d.numero, d.bairro, d.municipio, d.uf, d.cep
                     ].filter(Boolean).join(', ');
-                    if (enderecoApi && !enderecoAtual) $wire.set('endereco', enderecoApi);
+                    if (enderecoApi) $wire.set('endereco', enderecoApi);
 
-                    if (d?.email && !emailAtual) $wire.set('email', d.email);
+                    if (d.email) $wire.set('email', d.email);
 
-                    const telApi = String(d?.ddd_telefone_1 || '').replace(/\D/g, '');
-                    if (telApi && !contatoAtual) $wire.set('contato', telApi);
+                    const telApi = String(d.ddd_telefone_1 || '').replace(/\D/g, '');
+                    if (telApi) $wire.set('contato', telApi);
 
                     Swal.close();
-
                     toast({ icon: 'success', title: 'Dados do CNPJ importados' });
 
                 } catch (e) {
@@ -200,5 +203,4 @@
             });
         </script>
     @endscript
-
 </div>
