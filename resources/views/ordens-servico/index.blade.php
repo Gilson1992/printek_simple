@@ -1,7 +1,11 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
-@section('title', 'ordens-servico')
+@section('title', 'Ordem de Serviço')
 
 @section('content_header')
-<h1>Ordens de Serviço</h1>
+    <h1>Ordens de Serviço</h1>
+@stop
+
+@section('footer')
+    <livewire:components.copyright/>
 @stop

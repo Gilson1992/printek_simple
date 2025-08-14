@@ -1,17 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Endividamento')
+@section('title', 'Clientes')
 
 @section('content_header')
-    <div style="display:flex;align-items:center;justify-content:space-between;">
-        <h1 class="m-0 text-dark">Clientes</h1>
-        <i class="fas fa-hand-holding-usd" style="color:#f57600;margin-right:83%;"></i>
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+        <h1 class="text-3xl font-bold">
+            Clientes
+        </h1>
     </div>
 @stop
 
 @section('content')
-    <div class="bg-white px-4 pt-3 rounded-md shadow-lg">
-        <livewire:powergrid.clientes-data-tables/>
+    <div class="dark:bg-gray-900 bg-white px-4 pt-3 rounded-md shadow-lg">
+        <livewire:powergrid.cliente-table/>
     </div>
 @stop
 
+@section('footer')
+    <livewire:components.copyright/>
+@stop

@@ -1,20 +1,16 @@
 <?php
 
-namespace App\Livewire\powergrid;
+namespace App\Livewire\Powergrid;
 
 use App\Models\Equipamento;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use PowerComponents\LivewirePowerGrid\Button;
-use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
-use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridFields;
-use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use Illuminate\Support\Carbon;
+use PowerComponents\LivewirePowerGrid\{Button, Column, PowerGridFields, PowerGridComponent};
+use PowerComponents\LivewirePowerGrid\Facades\{Filter, Rule, PowerGrid};
 
-final class EquipamentosDatatables extends PowerGridComponent
+final class EquipamentoTable extends PowerGridComponent
 {
-    public string $tableName = 'equipamentos-datatables-4rjh5t-table';
+    public string $tableName = 'equipamento-table';
 
     public function setUp(): array
     {
@@ -34,11 +30,6 @@ final class EquipamentosDatatables extends PowerGridComponent
         return Equipamento::query();
     }
 
-    public function relationSearch(): array
-    {
-        return [];
-    }
-
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
@@ -48,59 +39,60 @@ final class EquipamentosDatatables extends PowerGridComponent
             ->add('marca')
             ->add('modelo')
             ->add('serial')
+            ->add('ativo')
             ->add('contador')
             ->add('tipo_posse')
             ->add('observacao')
-            ->add('created_at');
+            ->add('created_at_formatted', fn (Equipamento $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
     }
 
     public function columns(): array
     {
         return [
-            Column::make('Id', 'id'),
-            Column::make('Cliente id', 'cliente_id'),
-            Column::make('Tipo', 'tipo')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Marca', 'marca')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Modelo', 'modelo')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Serial', 'serial')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Contador', 'contador')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Tipo posse', 'tipo_posse')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Observacao', 'observacao')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Created at', 'created_at_formatted', 'created_at')
+            Column::make('ID', 'id')
+                ->searchable()
                 ->sortable(),
-
-            Column::make('Created at', 'created_at')
-                ->sortable()
+            Column::make('ID Cliente', 'cliente_id')
+                ->searchable()
+                ->sortable(),
+            Column::make('Tipo', 'tipo')
+                ->searchable()
+                ->sortable(),
+            Column::make('Marca', 'marca')
+                ->searchable()
+                ->sortable(),
+            Column::make('Modelo', 'modelo')
+                ->searchable()
+                ->sortable(),
+            Column::make('Serial', 'serial')
+                ->searchable()
+                ->sortable(),
+            Column::make('Contador', 'contador')
+                ->searchable()
+                ->sortable(),
+            Column::make('Tipo Posse', 'tipo_posse')
+                ->searchable()
+                ->sortable(),
+            Column::make('Observação', 'observacao')
+                ->searchable()
+                ->sortable(),
+            Column::make('Criado Em', 'created_at_formatted', 'created_at')
                 ->searchable(),
-
-            Column::action('Action')
+            Column::action('Ação')
         ];
     }
 
     public function filters(): array
     {
         return [
+            Filter::inputText('cliente_id'),
+            Filter::inputText('tipo'),
+            Filter::inputText('marca'),
+            Filter::inputText('modelo'),
+            Filter::inputText('serial'),
+            Filter::inputText('contador'),
+            Filter::inputText('tipo_posse'),
+            Filter::datepicker('created_at_formatted', 'created_at'),
         ];
     }
 
@@ -113,7 +105,7 @@ final class EquipamentosDatatables extends PowerGridComponent
     public function actions(Equipamento $row): array
     {
         return [
-            Button::add('edit')
+            Button::add('editar-cliente')
                 ->slot('Edit: '.$row->id)
                 ->id()
                 ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
@@ -122,7 +114,7 @@ final class EquipamentosDatatables extends PowerGridComponent
     }
 
     /*
-    public function actionRules($row): array
+    public function actionRules(Equipamento $row): array
     {
        return [
             // Hide button edit for ID 1
