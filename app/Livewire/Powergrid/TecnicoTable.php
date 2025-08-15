@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Powergrid;
 
+use App\Helpers\PowerGridThemes\TailwindHeaderFixed;
 use App\Models\Tecnico;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -11,6 +12,20 @@ use PowerComponents\LivewirePowerGrid\Facades\{Filter, Rule, PowerGrid};
 final class TecnicoTable extends PowerGridComponent
 {
     public string $tableName = 'tecnico-table';
+
+    protected $listeners = [
+        'reloadPowergrid',
+    ];
+
+    public function customThemeClass(): ?string
+    {
+        return TailwindHeaderFixed::class;
+    }
+
+    public function reloadPowergrid()
+    {
+        $this->refresh();
+    }
 
     public function setUp(): array
     {
@@ -25,6 +40,16 @@ final class TecnicoTable extends PowerGridComponent
         ];
     }
 
+    public function header(): array
+    {
+        return [
+            Button::add('cadastrar-tecnico')
+                ->slot('Cadastrar Técnico')
+                ->class('btn btn-primary mt-2')
+                ->openModal('modal.tecnico', []),
+        ];
+    }
+
     public function datasource(): Builder
     {
         return Tecnico::query();
@@ -34,7 +59,7 @@ final class TecnicoTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
-            ->add('tecnico_id')
+            ->add('matricula')
             ->add('nome')
             ->add('contato')
             ->add('disponibilidade')
@@ -47,7 +72,7 @@ final class TecnicoTable extends PowerGridComponent
             Column::make('ID', 'id')
                 ->searchable()
                 ->sortable(),
-            Column::make('ID Técnico', 'tecnico_id')
+            Column::make('Matrícula', 'matricula')
                 ->searchable()
                 ->sortable(),
             Column::make('Nome', 'nome')
@@ -68,7 +93,7 @@ final class TecnicoTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('tecnico_id'),
+            Filter::inputText('matricula'),
             Filter::inputText('nome'),
             Filter::inputText('contato'),
             Filter::inputText('disponibilidade'),
@@ -76,21 +101,42 @@ final class TecnicoTable extends PowerGridComponent
         ];
     }
 
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
-    {
-        $this->js('alert('.$rowId.')');
-    }
-
-    public function actions(Tecnico $row): array
+    public function actions(Tecnico $tecnico): array
     {
         return [
-            Button::add('editar-cliente')
-                ->slot('Edit: '.$row->id)
-                ->id()
-                ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
+            Button::add('editar-tecnico')
+                ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
+                ->class('btn btn-xs text-primary')
+                ->openModal('modal.tecnico', [
+                    'id' => $tecnico->id,
+                ])
+            ,
+            Button::add('deletar-tecnico')
+                ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
+                ->class('btn btn-xs text-primary')
+                ->dispatch('delete', ['tecnico' => $tecnico])
+            ,
         ];
+    }
+
+    #[\Livewire\Attributes\On('delete')]
+    public function delete($tecnico): void
+    {
+        $id = $tecnico['id'];
+        $this->js("alertaDelete($id, 'Deseja excluir <b>{$tecnico['nome']}</b>?', 'deleteRow')");
+    }
+
+    #[\Livewire\Attributes\On('deleteRow')]
+    public function deleteRow($id): void
+    {
+        $tecnico = Tecnico::find($id);
+        $result = $tecnico->delete();
+
+        if ($result) {
+            $this->js("alertaSucesso('<b>$tecnico->nome</b> excluído com sucesso')");
+        } else {
+            $this->js("alertaFalha('Erro ao excluir <b>$tecnico->nome</b>')");
+        }
     }
 
     /*

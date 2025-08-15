@@ -6,29 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('tecnicos', function (Blueprint $table) {
             $table->id();
-
-            // Chave estrangeira que liga o técnico ao seu usuário de login
-            $table->foreignId('tecnico_id')->nullable()->constrained('tecnicos')->onDelete('set null');
-
-            $table->string('nome');
+            $table->string('matricula', 20)->unique()->nullable();
+            $table->string('nome')->nullable();
             $table->string('contato', 100)->nullable();
-            $table->string('disponibilidade', 50)->nullable(); // Ex: 'Disponível', 'Em Atendimento'
-
+            $table->string('disponibilidade', 50)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('tecnicos');

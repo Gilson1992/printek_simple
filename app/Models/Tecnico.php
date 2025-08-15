@@ -3,14 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model,SoftDeletes};
 
 class Tecnico extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['nome', 'cnpj', 'contato', 'email', 'endereco', 'observacao', 'ativo'];
+    protected $fillable = [
+        'matricula',
+        'nome',
+        'contato',
+        'disponibilidade',
+    ];
 
     public function user()
     {

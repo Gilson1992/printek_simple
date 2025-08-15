@@ -117,7 +117,6 @@ final class ClienteTable extends PowerGridComponent
                 )
                 ->searchable()
                 ->sortable(),
-
             Column::make('Criado Em', 'created_at_formatted', 'created_at')
                 ->searchable(),
             Column::action('Ação')
