@@ -10,7 +10,13 @@ class Cliente extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'nome', 'cnpj', 'contato', 'email', 'endereco', 'observacao', 'ativo'
+        'nome',
+        'cnpj',
+        'contato',
+        'email',
+        'endereco',
+        'observacao',
+        'ativo',
     ];
 
     public function equipamentos()

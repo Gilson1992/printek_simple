@@ -3,6 +3,7 @@
 namespace App\Livewire\Modal;
 
 use App\Models\Cliente as ClienteModel;
+use Illuminate\Support\Facades\Log;
 use LivewireUI\Modal\ModalComponent;
 
 class Cliente extends ModalComponent
@@ -18,15 +19,15 @@ class Cliente extends ModalComponent
     public function mount($id = null)
     {
         if ($id) {
-            $this->idCliente    = $id;
-            $cliente            = ClienteModel::findOrFail($id);
+            $this->idCliente = $id;
+            $cliente         = ClienteModel::findOrFail($id);
 
-            $this->nome        = $cliente->nome;
-            $this->cnpj        = $cliente->cnpj;
-            $this->contato     = $cliente->contato;
-            $this->email       = $cliente->email;
-            $this->endereco    = $cliente->endereco;
-            $this->observacao  = $cliente->observacao;
+            $this->nome       = $cliente->nome;
+            $this->cnpj       = $cliente->cnpj;
+            $this->contato    = $cliente->contato;
+            $this->email      = $cliente->email;
+            $this->endereco   = $cliente->endereco;
+            $this->observacao = $cliente->observacao;
         }
     }
 
@@ -89,7 +90,15 @@ class Cliente extends ModalComponent
             $this->dispatch('closeModal');
             $this->dispatch('reloadPowergrid');
         } catch (\Throwable $e) {
-            $this->js("alertaFalha('Erro ao salvar cliente. Tente novamente.')");
+            // Log::error('Erro ao salvar Cliente', [
+            //     'mensagem' => $e->getMessage(),
+            //     'dados'    => $data,
+            // ]);
+            if ($cleanCnpj === $data['cnpj']) {
+                $this->js("alertaAviso('Cliente já cadastrado.')");
+            } else {
+                $this->js("alertaFalha('Erro ao salvar cliente. Tente novamente.')");
+            }
         }
     }
 

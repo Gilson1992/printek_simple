@@ -12,7 +12,7 @@
             <div class="card-body">
                 <form wire:submit.prevent="salvarCliente" id="form">
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-8">
                             <x-adminlte-input
                                 label="Nome"
                                 placeholder="Nome do cliente..."
@@ -24,10 +24,8 @@
                             >
                             </x-adminlte-input>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-12">
+                        <div class="col-4">
                             <x-adminlte-input
                                 label="CNPJ"
                                 placeholder="__.___.___/____-__"
@@ -44,7 +42,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-3">
                             <x-adminlte-input
                                 label="Contato"
                                 placeholder="(__) _____-____"
@@ -58,10 +56,8 @@
                             >
                             </x-adminlte-input>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
+                    
+                        <div class="col-9">
                             <x-adminlte-input
                                 label="E-mail"
                                 placeholder="cliente@dominio.com"

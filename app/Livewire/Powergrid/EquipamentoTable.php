@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Powergrid;
 
+use App\Helpers\PowerGridThemes\TailwindHeaderFixed;
 use App\Models\Equipamento;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -11,6 +12,20 @@ use PowerComponents\LivewirePowerGrid\Facades\{Filter, Rule, PowerGrid};
 final class EquipamentoTable extends PowerGridComponent
 {
     public string $tableName = 'equipamento-table';
+
+    protected $listeners = [
+        'reloadPowergrid',
+    ];
+
+    public function customThemeClass(): ?string
+    {
+        return TailwindHeaderFixed::class;
+    }
+
+    public function reloadPowergrid()
+    {
+        $this->refresh();
+    }
 
     public function setUp(): array
     {
@@ -25,6 +40,16 @@ final class EquipamentoTable extends PowerGridComponent
         ];
     }
 
+    public function header(): array
+    {
+        return [
+            Button::add('cadastrar-equipamento')
+                ->slot('Cadastrar Equipamento')
+                ->class('btn btn-primary mt-2')
+                ->openModal('modal.equipamento', []),
+        ];
+    }
+
     public function datasource(): Builder
     {
         return Equipamento::query();
@@ -34,14 +59,13 @@ final class EquipamentoTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
-            ->add('cliente_id')
+            ->add('cliente_id', fn (Equipamento $model) => $model->cliente->nome)
             ->add('tipo')
+            ->add('tipo_posse')
             ->add('marca')
             ->add('modelo')
             ->add('serial')
-            ->add('ativo')
             ->add('contador')
-            ->add('tipo_posse')
             ->add('observacao')
             ->add('created_at_formatted', fn (Equipamento $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
     }
@@ -58,6 +82,9 @@ final class EquipamentoTable extends PowerGridComponent
             Column::make('Tipo', 'tipo')
                 ->searchable()
                 ->sortable(),
+            Column::make('Tipo Posse', 'tipo_posse')
+                ->searchable()
+                ->sortable(),
             Column::make('Marca', 'marca')
                 ->searchable()
                 ->sortable(),
@@ -68,9 +95,6 @@ final class EquipamentoTable extends PowerGridComponent
                 ->searchable()
                 ->sortable(),
             Column::make('Contador', 'contador')
-                ->searchable()
-                ->sortable(),
-            Column::make('Tipo Posse', 'tipo_posse')
                 ->searchable()
                 ->sortable(),
             Column::make('Observação', 'observacao')
@@ -85,7 +109,7 @@ final class EquipamentoTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('cliente_id'),
+            Filter::inputText('cliente_id')->filterRelation('cliente', 'nome'),
             Filter::inputText('tipo'),
             Filter::inputText('marca'),
             Filter::inputText('modelo'),
@@ -96,21 +120,42 @@ final class EquipamentoTable extends PowerGridComponent
         ];
     }
 
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
-    {
-        $this->js('alert('.$rowId.')');
-    }
-
-    public function actions(Equipamento $row): array
+    public function actions(Equipamento $equipamento): array
     {
         return [
-            Button::add('editar-cliente')
-                ->slot('Edit: '.$row->id)
-                ->id()
-                ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
+            Button::add('editar-equipamento')
+                ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
+                ->class('btn btn-xs text-primary')
+                ->openModal('modal.equipamento', [
+                    'id' => $equipamento->id,
+                ])
+            ,
+            Button::add('deletar-equipamento')
+                ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
+                ->class('btn btn-xs text-primary')
+                ->dispatch('delete', ['equipamento' => $equipamento])
+            ,
         ];
+    }
+
+    #[\Livewire\Attributes\On('delete')]
+    public function delete($equipamento): void
+    {
+        $id = $equipamento['id'];
+        $this->js("alertaDelete($id, 'Deseja excluir <b>{$equipamento['modelo']}</b>?', 'deleteRow')");
+    }
+
+    #[\Livewire\Attributes\On('deleteRow')]
+    public function deleteRow($id): void
+    {
+        $equipamento = Equipamento::find($id);
+        $result = $equipamento->delete();
+
+        if ($result) {
+            $this->js("alertaSucesso('<b>$equipamento->modelo</b> excluído com sucesso')");
+        } else {
+            $this->js("alertaFalha('Erro ao excluir <b>$equipamento->modelo</b>')");
+        }
     }
 
     /*

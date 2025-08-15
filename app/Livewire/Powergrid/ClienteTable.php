@@ -179,7 +179,7 @@ final class ClienteTable extends PowerGridComponent
         if ($result) {
             $this->js("alertaSucesso('<b>$cliente->nome</b> excluído com sucesso')");
         } else {
-            $this->js("alertaFalha('Erro ao excluir <b>Cliente</b>')");
+            $this->js("alertaFalha('Erro ao excluir <b>$cliente->nome</b>')");
         }
     }
 

@@ -18,7 +18,8 @@ window.TomSelect = TomSelect;
 import SlimSelect from 'slim-select';
 window.SlimSelect = SlimSelect;
 
-import { alertaSucesso, alertaFalha, alertaDelete } from './alerts';
+import { alertaSucesso, alertaFalha, alertaAviso, alertaDelete } from './alerts';
 window.alertaSucesso = alertaSucesso;
 window.alertaFalha   = alertaFalha;
+window.alertaAviso   = alertaAviso;
 window.alertaDelete  = alertaDelete;
