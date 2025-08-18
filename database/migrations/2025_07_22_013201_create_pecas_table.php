@@ -13,9 +13,9 @@ return new class extends Migration
             $table->text('descricao')->nullable();
             $table->string('codigo')->nullable();
             $table->integer('quantidade')->default(0);
-            $table->string('unidade', 10)->nullable(); // Ex: 'pç', 'un', 'cx'
+            $table->string('unidade', 10)->nullable();
             $table->decimal('preco', 10, 2)->nullable();
-            $table->boolean('ativo')->default(true); // controle de estoque
+            $table->boolean('ativo')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });
