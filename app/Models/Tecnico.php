@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\Disponibilidade;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\{Model,SoftDeletes};
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
 class Tecnico extends Model
 {
@@ -16,6 +17,10 @@ class Tecnico extends Model
         'nome',
         'contato',
         'disponibilidade',
+    ];
+
+    protected $casts = [
+        'disponibilidade' => Disponibilidade::class,
     ];
 
     public function user()

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\{Tipo, TipoPosse};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\{Model,SoftDeletes};
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
 class Equipamento extends Model
 {
@@ -20,6 +21,12 @@ class Equipamento extends Model
         'serial',
         'contador',
         'observacao',
+    ];
+
+    protected $casts = [
+        'contador'    => 'integer',
+        'tipo'        => Tipo::class,
+        'tipo_posse'  => TipoPosse::class,
     ];
 
     public function cliente()

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\StatusOs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\{Model,SoftDeletes};
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
 class OrdemServico extends Model
 {
@@ -22,8 +23,16 @@ class OrdemServico extends Model
         'solucao',
         'observacao_recebimento',
         'observacao_servico',
-        'observacao_tecnica',
+        'observacao_tecnico',
+        'contador',
         'status',
+    ];
+
+    protected $casts = [
+        'data_abertura'   => 'datetime',
+        'data_prevista'   => 'datetime',
+        'data_fechamento' => 'datetime',
+        'status'          => StatusOs::class,
     ];
 
     public function equipamento()
