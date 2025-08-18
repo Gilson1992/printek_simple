@@ -10,9 +10,10 @@ return new class extends Migration
     {
         Schema::create('servicos', function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
-            // $table->decimal('preco', 10, 2)->nullable();
             $table->text('descricao')->nullable();
+            $table->string('codigo')->nullable();
+            $table->string('contador')->nullable();
+            $table->decimal('preco', 10, 2)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

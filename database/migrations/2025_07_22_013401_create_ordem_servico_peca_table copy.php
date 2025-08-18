@@ -12,8 +12,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ordem_servico_id')->constrained('ordens_servico')->onDelete('cascade');
             $table->foreignId('peca_id')->constrained('pecas')->onDelete('restrict');
+            $table->unique(['ordem_servico_id', 'peca_id']);
             $table->integer('quantidade');
             $table->decimal('valor_unitario', 10, 2);
+            $table->decimal('valor_total', 10, 2)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

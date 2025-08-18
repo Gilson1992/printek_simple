@@ -11,16 +11,17 @@ return new class extends Migration
         Schema::create('ordens_servico', function (Blueprint $table) {
             $table->id();
             $table->foreignId('equipamento_id')->constrained('equipamentos')->onDelete('cascade');
-            $table->foreignId('tecnico_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('tecnico_id')->nullable()->constrained('tecnicos')->onDelete('set null');
             $table->dateTime('data_abertura');
-            $table->dateTime('data_prevista');
+            $table->dateTime('data_prevista')->nullable();
             $table->dateTime('data_fechamento')->nullable();
             $table->text('defeito_declarado');
             $table->text('defeito_encontrado')->nullable();
             $table->text('solucao')->nullable();
             $table->text('observacao_recebimento')->nullable();
             $table->text('observacao_servico')->nullable();
-            $table->text('observacao_tecnica')->nullable();
+            $table->text('observacao_tecnico')->nullable();
+            $table->integer('contador');
             $table->string('status', 20);
             $table->timestamps();
             $table->softDeletes();
