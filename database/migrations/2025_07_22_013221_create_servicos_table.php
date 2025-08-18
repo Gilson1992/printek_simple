@@ -10,11 +10,9 @@ return new class extends Migration
     {
         Schema::create('servicos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('os_id')->constrained('ordens_servicos')->onDelete('cascade');
-            $table->string('descricao');
-            $table->string('codigo');
-            $table->number('quantidade');
-            $table->decimal('preco_unitario', 10, 2);
+            $table->string('nome');
+            // $table->decimal('preco', 10, 2)->nullable();
+            $table->text('descricao')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

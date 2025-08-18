@@ -9,6 +9,8 @@ class Equipamento extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'equipamentos';
+
     protected $fillable = [
         'cliente_id',
         'tipo',

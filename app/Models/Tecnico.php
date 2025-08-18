@@ -9,6 +9,8 @@ class Tecnico extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'tecnicos';
+
     protected $fillable = [
         'matricula',
         'nome',

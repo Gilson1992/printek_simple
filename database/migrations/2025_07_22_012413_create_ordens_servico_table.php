@@ -8,12 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('ordens_servicos', function (Blueprint $table) {
+        Schema::create('ordens_servico', function (Blueprint $table) {
             $table->id();
             $table->foreignId('equipamento_id')->constrained('equipamentos')->onDelete('cascade');
             $table->foreignId('tecnico_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('servico_id')->nullable()->constrained('servicos')->onDelete('set null');
-            $table->foreignId('peca_id')->nullable()->constrained('pecas')->onDelete('set null');
             $table->dateTime('data_abertura');
             $table->dateTime('data_prevista');
             $table->dateTime('data_fechamento')->nullable();
@@ -31,6 +29,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('ordens_servicos');
+        Schema::dropIfExists('ordens_servico');
     }
 };

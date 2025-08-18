@@ -9,6 +9,8 @@ class OrdemServico extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'ordens_servico';
+
     protected $fillable = [
         'equipamento_id',
         'tecnico_id',
@@ -32,5 +34,19 @@ class OrdemServico extends Model
     public function tecnico()
     {
         return $this->belongsTo(Tecnico::class);
+    }
+
+    public function pecas()
+    {
+        return $this->belongsToMany(Peca::class, 'ordem_servico_peca')
+            ->withPivot(['quantidade', 'valor_unitario', 'valor_total'])
+            ->withTimestamps();
+    }
+
+    public function servicos()
+    {
+        return $this->belongsToMany(Servico::class, 'ordem_servico_servico')
+            ->withPivot(['quantidade', 'valor_unitario', 'valor_total'])
+            ->withTimestamps();
     }
 }
