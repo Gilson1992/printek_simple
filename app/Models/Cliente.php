@@ -21,10 +21,6 @@ class Cliente extends Model
         'ativo',
     ];
 
-    protected $casts = [
-        'ativo' => 'boolean',
-    ];
-
     public function equipamentos()
     {
         return $this->hasMany(Equipamento::class);

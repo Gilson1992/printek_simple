@@ -18,10 +18,6 @@ class Servico extends Model
         'preco',
     ];
 
-    protected $casts = [
-        'preco' => 'decimal:2',
-    ];
-
     public function ordensServico()
     {
         return $this->belongsToMany(OrdemServico::class, 'ordem_servico_servico')

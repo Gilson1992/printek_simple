@@ -19,10 +19,6 @@ class Tecnico extends Model
         'disponibilidade',
     ];
 
-    protected $casts = [
-        'disponibilidade' => Disponibilidade::class,
-    ];
-
     public function user()
     {
         return $this->belongsTo(User::class);

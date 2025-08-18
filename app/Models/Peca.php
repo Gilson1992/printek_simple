@@ -20,11 +20,6 @@ class Peca extends Model
         'ativo',
     ];
 
-    protected $casts = [
-        'preco' => 'decimal:2',
-        'ativo' => 'boolean',
-    ];
-
     public function ordensServico()
     {
         return $this->belongsToMany(OrdemServico::class, 'ordem_servico_peca')

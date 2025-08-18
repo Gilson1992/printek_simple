@@ -28,13 +28,6 @@ class OrdemServico extends Model
         'status',
     ];
 
-    protected $casts = [
-        'data_abertura'   => 'datetime',
-        'data_prevista'   => 'datetime',
-        'data_fechamento' => 'datetime',
-        'status'          => StatusOs::class,
-    ];
-
     public function equipamento()
     {
         return $this->belongsTo(Equipamento::class);

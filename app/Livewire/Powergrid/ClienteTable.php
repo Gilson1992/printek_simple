@@ -45,7 +45,7 @@ final class ClienteTable extends PowerGridComponent
         return [
             Button::add('cadastrar-cliente')
                 ->slot('Cadastrar Cliente')
-                ->class('btn btn-primary mt-2')
+                ->class('btn btn-primary mt-2 text-bold')
                 ->openModal('modal.cliente', []),
         ];
     }
@@ -135,12 +135,12 @@ final class ClienteTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('nome'),
-            Filter::inputText('cnpj'),
-            Filter::inputText('contato'),
-            Filter::inputText('email'),
-            Filter::datepicker('created_at_formatted', 'created_at'),
+            Filter::inputText('nome')->operators([]),
+            Filter::inputText('cnpj')->operators([]),
+            Filter::inputText('contato')->operators([]),
+            Filter::inputText('email')->operators([]),
             Filter::boolean('ativo', 'ativo')->label('Sim', 'Não'),
+            Filter::datepicker('created_at_formatted', 'created_at'),
         ];
     }
 

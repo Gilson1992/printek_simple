@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Powergrid;
 
+use App\Enums\{Tipo, TipoPosse};
 use App\Helpers\PowerGridThemes\TailwindHeaderFixed;
 use App\Models\Equipamento;
 use Illuminate\Database\Eloquent\Builder;
@@ -45,7 +46,7 @@ final class EquipamentoTable extends PowerGridComponent
         return [
             Button::add('cadastrar-equipamento')
                 ->slot('Cadastrar Equipamento')
-                ->class('btn btn-primary mt-2')
+                ->class('btn btn-primary mt-2 text-bold')
                 ->openModal('modal.equipamento', []),
         ];
     }
@@ -109,13 +110,25 @@ final class EquipamentoTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('cliente_id')->filterRelation('cliente', 'nome'),
-            Filter::inputText('tipo'),
-            Filter::inputText('marca'),
-            Filter::inputText('modelo'),
-            Filter::inputText('serial'),
-            Filter::inputText('contador'),
-            Filter::inputText('tipo_posse'),
+            Filter::inputText('cliente_id')->operators([])->filterRelation('cliente', 'nome'),
+            Filter::select('tipo')
+                ->dataSource(collect(Tipo::cases())->map(fn($tipo) => [
+                    'value' => $tipo->value,
+                    'label' => $tipo->value
+                ]))
+                ->optionValue('value')
+                ->optionLabel('label'),
+            Filter::select('tipo_posse')
+                ->dataSource(collect(TipoPosse::cases())->map(fn($tipo) => [
+                    'value' => $tipo->value,
+                    'label' => $tipo->value
+                ]))
+                ->optionValue('value')
+                ->optionLabel('value'),
+            Filter::inputText('marca')->operators([]),
+            Filter::inputText('modelo')->operators([]),
+            Filter::inputText('serial')->operators([]),
+            Filter::inputText('contador')->operators([]),
             Filter::datepicker('created_at_formatted', 'created_at'),
         ];
     }

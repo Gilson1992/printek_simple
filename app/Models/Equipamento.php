@@ -23,12 +23,6 @@ class Equipamento extends Model
         'observacao',
     ];
 
-    protected $casts = [
-        'contador'    => 'integer',
-        'tipo'        => Tipo::class,
-        'tipo_posse'  => TipoPosse::class,
-    ];
-
     public function cliente()
     {
         return $this->belongsTo(Cliente::class);

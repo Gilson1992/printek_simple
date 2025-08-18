@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Powergrid;
 
+use App\Enums\Disponibilidade;
 use App\Helpers\PowerGridThemes\TailwindHeaderFixed;
 use App\Models\Tecnico;
 use Illuminate\Database\Eloquent\Builder;
@@ -45,7 +46,7 @@ final class TecnicoTable extends PowerGridComponent
         return [
             Button::add('cadastrar-tecnico')
                 ->slot('Cadastrar Técnico')
-                ->class('btn btn-primary mt-2')
+                ->class('btn btn-primary mt-2 text-bold')
                 ->openModal('modal.tecnico', []),
         ];
     }
@@ -93,10 +94,16 @@ final class TecnicoTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('matricula'),
-            Filter::inputText('nome'),
-            Filter::inputText('contato'),
-            Filter::inputText('disponibilidade'),
+            Filter::inputText('matricula')->operators([]),
+            Filter::inputText('nome')->operators([]),
+            Filter::inputText('contato')->operators([]),
+            Filter::select('disponibilidade')
+                ->dataSource(collect(Disponibilidade::cases())->map(fn($tipo) => [
+                    'value' => $tipo->value,
+                    'label' => $tipo->value
+                ]))
+                ->optionValue('value')
+                ->optionLabel('label'),
             Filter::datepicker('created_at_formatted', 'created_at'),
         ];
     }
