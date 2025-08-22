@@ -343,6 +343,16 @@ return [
             'route' => 'tecnicos.index',
             'icon' => 'fas fa-headset',
         ],
+        [
+            'text' => 'Serviços',
+            'route' => 'servicos.index',
+            'icon' => 'fas fa-cog',
+        ],
+        [
+            'text' => 'Peças',
+            'route' => 'pecas.index',
+            'icon' => 'fas fa-tools',
+        ],
 
     ],
 

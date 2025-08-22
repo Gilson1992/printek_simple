@@ -15,9 +15,9 @@ class OrdemServico extends Model
     protected $fillable = [
         'equipamento_id',
         'tecnico_id',
-        'data_abertura',
+        'data_entrada',
         'data_prevista',
-        'data_fechamento',
+        'data_conclusao',
         'defeito_declarado',
         'defeito_encontrado',
         'solucao',

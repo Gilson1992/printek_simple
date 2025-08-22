@@ -28,7 +28,7 @@ class TailwindHeaderFixed extends Tailwind
                 'tbody'              => 'z-[0]',
                 'tbodyEmpty'         => '',
                 'tr'                 => '',
-                'td'                 => '',
+                'td'                 => 'whitespace-nowrap text-ellipsis overflow-hidden max-w-[24rem]',
                 'tdEmpty'            => '',
                 'tdSummarize'        => '',
                 'trSummarize'        => '',

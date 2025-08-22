@@ -11,6 +11,8 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import './../../vendor/power-components/livewire-powergrid/dist/powergrid';
 
 import flatpickr from "flatpickr"; 
+import 'flatpickr/dist/themes/material_orange.css'
+import { Portuguese } from 'flatpickr/dist/l10n/pt.js'
 
 import TomSelect from "tom-select";
 window.TomSelect = TomSelect;

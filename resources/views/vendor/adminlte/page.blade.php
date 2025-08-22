@@ -10,7 +10,7 @@
     @livewire('wire-elements-modal')
     @wireUiScripts
     @vite(['resources/js/app.js'])
-    @livewireStyles
+    {{-- @livewireStyles --}}
 @stop
 
 @section('classes_body', $layoutHelper->makeBodyClasses())

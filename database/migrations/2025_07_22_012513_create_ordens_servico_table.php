@@ -12,9 +12,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('equipamento_id')->constrained('equipamentos')->onDelete('cascade');
             $table->foreignId('tecnico_id')->nullable()->constrained('tecnicos')->onDelete('set null');
-            $table->dateTime('data_abertura');
+            $table->dateTime('data_entrada');
             $table->dateTime('data_prevista')->nullable();
-            $table->dateTime('data_fechamento')->nullable();
+            $table->dateTime('data_conclusao')->nullable();
             $table->text('defeito_declarado');
             $table->text('defeito_encontrado')->nullable();
             $table->text('solucao')->nullable();

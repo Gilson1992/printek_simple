@@ -46,7 +46,7 @@ final class EquipamentoTable extends PowerGridComponent
         return [
             Button::add('cadastrar-equipamento')
                 ->slot('Cadastrar Equipamento')
-                ->class('btn btn-primary mt-2 text-bold')
+                ->class('btn btn-primary mt-2 mr-2 text-bold')
                 ->openModal('modal.equipamento', []),
         ];
     }
@@ -68,7 +68,7 @@ final class EquipamentoTable extends PowerGridComponent
             ->add('serial')
             ->add('contador')
             ->add('observacao')
-            ->add('created_at_formatted', fn (Equipamento $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
+            ->add('created_at_formatado', fn (Equipamento $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
     }
 
     public function columns(): array
@@ -101,7 +101,7 @@ final class EquipamentoTable extends PowerGridComponent
             Column::make('Observação', 'observacao')
                 ->searchable()
                 ->sortable(),
-            Column::make('Criado Em', 'created_at_formatted', 'created_at')
+            Column::make('Criado Em', 'created_at_formatado', 'created_at')
                 ->searchable(),
             Column::action('Ação')
         ];
@@ -129,7 +129,7 @@ final class EquipamentoTable extends PowerGridComponent
             Filter::inputText('modelo')->operators([]),
             Filter::inputText('serial')->operators([]),
             Filter::inputText('contador')->operators([]),
-            Filter::datepicker('created_at_formatted', 'created_at'),
+            Filter::datepicker('created_at_formatado', 'created_at'),
         ];
     }
 

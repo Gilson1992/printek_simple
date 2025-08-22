@@ -3,15 +3,15 @@
 namespace App\Livewire\Powergrid;
 
 use App\Helpers\PowerGridThemes\TailwindHeaderFixed;
-use App\Models\Cliente;
+use App\Models\Peca;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\{Button, Column, PowerGridFields, PowerGridComponent};
 use PowerComponents\LivewirePowerGrid\Facades\{Filter, Rule, PowerGrid};
 
-final class ClienteTable extends PowerGridComponent
+final class PecaTable extends PowerGridComponent
 {
-    public string $tableName = 'cliente-table';
+    public string $tableName = 'peca-table';
 
     protected $listeners = [
         'reloadPowergrid',
@@ -43,46 +43,31 @@ final class ClienteTable extends PowerGridComponent
     public function header(): array
     {
         return [
-            Button::add('cadastrar-cliente')
-                ->slot('Cadastrar Cliente')
+            Button::add('cadastrar-peca')
+                ->slot('Cadastrar Peça')
                 ->class('btn btn-primary mt-2 mr-2 text-bold')
-                ->openModal('modal.cliente', []),
+                ->openModal('modal.peca', []),
         ];
     }
 
     public function datasource(): Builder
     {
-        return Cliente::query();
+        return Peca::query();
     }
 
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
             ->add('id')
-            ->add('nome')
-            ->add('cnpj', fn(Cliente $c) => 
-                strlen($c->cnpj ?? '') === 14
-                    ? substr($c->cnpj, 0, 2) . '.' .
-                    substr($c->cnpj, 2, 3) . '.' .
-                    substr($c->cnpj, 5, 3) . '/' .
-                    substr($c->cnpj, 8, 4) . '-' .
-                    substr($c->cnpj, 12, 2)
-                    : ($c->cnpj ?? '')
+            ->add('descricao')
+            ->add('codigo')
+            ->add('quantidade')
+            ->add('unidade')
+            ->add('preco_formatado', fn (Peca $model) =>
+                'R$ ' . number_format($model->preco, 2, ',', '.')
             )
-            ->add('contato', fn(Cliente $c) =>
-                strlen($c->contato ?? '') === 11
-                    ? '(' . substr($c->contato, 0, 2) . ') ' .
-                    substr($c->contato, 2, 5) . '-' .
-                    substr($c->contato, 7, 4)
-                    : ($c->contato ?? '')
-            )
-            ->add('email')
-            ->add('endereco')
-            ->add('observacao')
             ->add('ativo')
-            ->add('created_at_formatado', fn (Cliente $model) => 
-                Carbon::parse($model->created_at)->format('d/m/Y')
-            );
+            ->add('created_at_formatado', fn (Peca $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
     }
 
     public function columns(): array
@@ -91,25 +76,23 @@ final class ClienteTable extends PowerGridComponent
             Column::make('ID', 'id')
                 ->searchable()
                 ->sortable(),
-            Column::make('Nome', 'nome')
+            Column::make('Descrição', 'descricao')
                 ->searchable()
                 ->sortable(),
-            Column::make('CNPJ', 'cnpj')
+            Column::make('Código', 'codigo')
                 ->searchable()
                 ->sortable(),
-            Column::make('Contato', 'contato')
+            Column::make('Quantidade', 'quantidade')
+                ->searchable()
+                ->sortable()
+                ->editOnClick(),
+            Column::make('Unidade', 'unidade')
                 ->searchable()
                 ->sortable(),
-            Column::make('E-mail', 'email')
+            Column::make('Preço', 'preco_formatado')
                 ->searchable()
                 ->sortable(),
-            Column::make('Endereço', 'endereco')
-                ->searchable()
-                ->sortable(),
-            Column::make('Observação', 'observacao')
-                ->searchable()
-                ->sortable(),
-            Column::make('Ativo?', 'ativo')
+            Column::make('Em Estoque?', 'ativo')
                 ->toggleable(
                     true,
                     'Sim',
@@ -125,65 +108,91 @@ final class ClienteTable extends PowerGridComponent
 
     public function onUpdatedToggleable(string|int $id, string $field, string $value): void
     {
-        Cliente::query()
+        Peca::query()
             ->find($id)
             ->update([$field => $value]);
 
         $this->dispatch('reloadPowergrid');
     }
 
+    public function onUpdatedEditable(string|int $id, string $field, string $value): void
+    {
+        if ($field === 'quantidade' && !is_numeric($value)) {
+            $this->js("alertaFalha('Valor inválido para quantidade')");
+            return;
+        }
+
+        $peca = Peca::find($id);
+
+        if (!$peca) {
+            $this->js("alertaFalha('Peça não encontrada')");
+            return;
+        }
+
+        $peca->$field = e($value);
+
+        if ($field === 'quantidade') {
+            $peca->ativo = ($value > 0) ? 1 : 0;
+        }
+
+        $peca->save();
+
+        $this->js("alertaSucesso('Quantidade de peças atualizada com sucesso!')");
+        $this->dispatch('reloadPowergrid');
+    }
+
+
     public function filters(): array
     {
         return [
-            Filter::inputText('nome')->operators([]),
-            Filter::inputText('cnpj')->operators([]),
-            Filter::inputText('contato')->operators([]),
-            Filter::inputText('email')->operators([]),
+            Filter::inputText('descricao')->operators([]),
+            Filter::inputText('codigo')->operators([]),
+            // Filter::inputText('quantidade')->operators([]),
+            // Filter::inputText('unidade')->operators([]),
             Filter::boolean('ativo', 'ativo')->label('Sim', 'Não'),
-            Filter::datepicker('created_at_formatado', 'created_at'),
         ];
     }
 
-    public function actions(Cliente $cliente): array
+    public function actions(Peca $peca): array
     {
         return [
-            Button::add('editar-cliente')
+            Button::add('editar-peca')
                 ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
                 ->class('btn btn-xs text-primary')
-                ->openModal('modal.cliente', [
-                    'id' => $cliente->id,
+                ->openModal('modal.peca', [
+                    'id' => $peca->id,
                 ])
             ,
-            Button::add('deletar-cliente')
+            Button::add('deletar-peca')
                 ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
                 ->class('btn btn-xs text-primary')
-                ->dispatch('delete', ['cliente' => $cliente])
+                ->dispatch('delete', ['peca' => $peca])
             ,
         ];
     }
 
     #[\Livewire\Attributes\On('delete')]
-    public function delete($cliente): void
+    public function delete($peca): void
     {
-        $id = $cliente['id'];
-        $this->js("alertaDelete($id, 'Deseja excluir <b>{$cliente['nome']}</b>?', 'deleteRow')");
+        $id = $peca['id'];
+        $this->js("alertaDelete($id, 'Deseja excluir <b>{$peca['descricao']}</b>?', 'deleteRow')");
     }
 
     #[\Livewire\Attributes\On('deleteRow')]
     public function deleteRow($id): void
     {
-        $cliente = Cliente::find($id);
-        $result = $cliente->delete();
+        $peca = Peca::find($id);
+        $result = $peca->delete();
 
         if ($result) {
-            $this->js("alertaSucesso('<b>$cliente->nome</b> excluído com sucesso')");
+            $this->js("alertaSucesso('<b>$peca->descricao</b> excluído com sucesso')");
         } else {
-            $this->js("alertaFalha('Erro ao excluir <b>$cliente->nome</b>')");
+            $this->js("alertaFalha('Erro ao excluir <b>$peca->descricao</b>')");
         }
     }
 
     /*
-    public function actionRules(Cliente $row): array
+    public function actionRules(Peca $row): array
     {
        return [
             // Hide button edit for ID 1

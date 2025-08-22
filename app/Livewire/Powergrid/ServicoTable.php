@@ -2,17 +2,16 @@
 
 namespace App\Livewire\Powergrid;
 
-use App\Enums\Disponibilidade;
 use App\Helpers\PowerGridThemes\TailwindHeaderFixed;
-use App\Models\Tecnico;
+use App\Models\Servico;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\{Button, Column, PowerGridFields, PowerGridComponent};
 use PowerComponents\LivewirePowerGrid\Facades\{Filter, Rule, PowerGrid};
 
-final class TecnicoTable extends PowerGridComponent
+final class ServicoTable extends PowerGridComponent
 {
-    public string $tableName = 'tecnico-table';
+    public string $tableName = 'servico-table';
 
     protected $listeners = [
         'reloadPowergrid',
@@ -44,27 +43,29 @@ final class TecnicoTable extends PowerGridComponent
     public function header(): array
     {
         return [
-            Button::add('cadastrar-tecnico')
-                ->slot('Cadastrar Técnico')
+            Button::add('cadastrar-servico')
+                ->slot('Cadastrar Serviço')
                 ->class('btn btn-primary mt-2 mr-2 text-bold')
-                ->openModal('modal.tecnico', []),
+                ->openModal('modal.servico', []),
         ];
     }
 
     public function datasource(): Builder
     {
-        return Tecnico::query();
+        return Servico::query();
     }
 
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
             ->add('id')
-            ->add('matricula')
-            ->add('nome')
-            ->add('contato')
-            ->add('disponibilidade')
-            ->add('created_at_formatado', fn (Tecnico $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
+            ->add('descricao')
+            ->add('codigo')
+            ->add('contador')
+            ->add('preco_formatado', fn (Servico $model) =>
+                'R$ ' . number_format($model->preco, 2, ',', '.')
+            )
+            ->add('created_at_formatado', fn (Servico $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
     }
 
     public function columns(): array
@@ -73,16 +74,16 @@ final class TecnicoTable extends PowerGridComponent
             Column::make('ID', 'id')
                 ->searchable()
                 ->sortable(),
-            Column::make('Matrícula', 'matricula')
+            Column::make('Descrição', 'descricao')
                 ->searchable()
                 ->sortable(),
-            Column::make('Nome', 'nome')
+            Column::make('Código', 'codigo')
                 ->searchable()
                 ->sortable(),
-            Column::make('Contato', 'contato')
+            Column::make('Contador', 'contador')
                 ->searchable()
                 ->sortable(),
-            Column::make('Disponibilidade', 'disponibilidade')
+            Column::make('Preço', 'preco_formatado')
                 ->searchable()
                 ->sortable(),
             Column::make('Criado Em', 'created_at_formatado', 'created_at')
@@ -94,60 +95,54 @@ final class TecnicoTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('matricula')->operators([]),
+            Filter::inputText('descricao')->operators([]),
             Filter::inputText('nome')->operators([]),
             Filter::inputText('contato')->operators([]),
-            Filter::select('disponibilidade')
-                ->dataSource(collect(Disponibilidade::cases())->map(fn($tipo) => [
-                    'value' => $tipo->value,
-                    'label' => $tipo->value
-                ]))
-                ->optionValue('value')
-                ->optionLabel('label'),
+            Filter::inputText('preco')->operators([]),
             Filter::datepicker('created_at_formatado', 'created_at'),
         ];
     }
 
-    public function actions(Tecnico $tecnico): array
+    public function actions(Servico $servico): array
     {
         return [
-            Button::add('editar-tecnico')
+            Button::add('editar-servico')
                 ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
                 ->class('btn btn-xs text-primary')
-                ->openModal('modal.tecnico', [
-                    'id' => $tecnico->id,
+                ->openModal('modal.servico', [
+                    'id' => $servico->id,
                 ])
             ,
-            Button::add('deletar-tecnico')
+            Button::add('deletar-servico')
                 ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
                 ->class('btn btn-xs text-primary')
-                ->dispatch('delete', ['tecnico' => $tecnico])
+                ->dispatch('delete', ['servico' => $servico])
             ,
         ];
     }
 
     #[\Livewire\Attributes\On('delete')]
-    public function delete($tecnico): void
+    public function delete($servico): void
     {
-        $id = $tecnico['id'];
-        $this->js("alertaDelete($id, 'Deseja excluir <b>{$tecnico['nome']}</b>?', 'deleteRow')");
+        $id = $servico['id'];
+        $this->js("alertaDelete($id, 'Deseja excluir <b>{$servico['descricao']}</b>?', 'deleteRow')");
     }
 
     #[\Livewire\Attributes\On('deleteRow')]
     public function deleteRow($id): void
     {
-        $tecnico = Tecnico::find($id);
-        $result = $tecnico->delete();
+        $servico = Servico::find($id);
+        $result = $servico->delete();
 
         if ($result) {
-            $this->js("alertaSucesso('<b>$tecnico->nome</b> excluído com sucesso')");
+            $this->js("alertaSucesso('<b>$servico->descricao</b> excluído com sucesso')");
         } else {
-            $this->js("alertaFalha('Erro ao excluir <b>$tecnico->nome</b>')");
+            $this->js("alertaFalha('Erro ao excluir <b>$servico->descricao</b>')");
         }
     }
 
     /*
-    public function actionRules(Tecnico $row): array
+    public function actionRules(Servico $row): array
     {
        return [
             // Hide button edit for ID 1

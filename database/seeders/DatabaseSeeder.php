@@ -12,6 +12,8 @@ class DatabaseSeeder extends Seeder
             ClienteSeeder::class,
             TecnicoSeeder::class,
             EquipamentoSeeder::class,
+            PecaSeeder::class,
+            ServicoSeeder::class,
         ]);
     }
 }
