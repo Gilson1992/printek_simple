@@ -82,13 +82,13 @@
             <div class="card-footer">
                 <div class="row flex justify-between">
                     <div class="col-3 p-0 flex justify-start">
-                        <button class="btn btn-primary" type="submit" form="form">
+                        <button class="btn btn-orange text-bold" type="submit" form="form">
                             <i class="fas fa-lg fa-save"></i> Salvar
                         </button>
                     </div>
 
                     <div class="col-3 p-0 flex justify-end">
-                        <button wire:click.prevent="$dispatch('closeModal')" class="btn btn-primary">
+                        <button wire:click.prevent="$dispatch('closeModal')" class="btn btn-secondary text-bold">
                             <i class="fas fa-ban"></i> Cancelar
                         </button>
                     </div>

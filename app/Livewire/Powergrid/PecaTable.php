@@ -45,7 +45,7 @@ final class PecaTable extends PowerGridComponent
         return [
             Button::add('cadastrar-peca')
                 ->slot('Cadastrar Peça')
-                ->class('btn btn-primary mt-2 mr-2 text-bold')
+                ->class('btn btn-orange mt-2 mr-2 text-bold')
                 ->openModal('modal.peca', []),
         ];
     }
@@ -158,14 +158,14 @@ final class PecaTable extends PowerGridComponent
         return [
             Button::add('editar-peca')
                 ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->openModal('modal.peca', [
                     'id' => $peca->id,
                 ])
             ,
             Button::add('deletar-peca')
                 ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->dispatch('delete', ['peca' => $peca])
             ,
         ];

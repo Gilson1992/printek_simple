@@ -46,11 +46,11 @@ final class OrdemServicoTable extends PowerGridComponent
         return [
             Button::add('cadastrar-os')
                 ->slot('Abrir OS')
-                ->class('btn btn-primary mt-2 mr-2 text-bold')
+                ->class('btn btn-orange mt-2 mr-2 text-bold')
                 ->openModal('modal.ordem-servico', []),
             Button::add('gerar-os')
                 ->slot('Gerar OS')
-                ->class('btn btn-primary mt-2 mr-2 text-bold')
+                ->class('btn btn-orange mt-2 mr-2 text-bold')
                 // ->openModal('modal.ordem-servico', []),
         ];
     }
@@ -67,7 +67,7 @@ final class OrdemServicoTable extends PowerGridComponent
             // ->add('equipamento_formatado', fn (OrdemServico $model) =>
             //     "{$model->equipamento->marca} - {$model->equipamento->modelo} ({$model->equipamento->cliente->nome})"
             // )
-            ->add('cliente', fn (OrdemServico $model) =>
+            ->add('cliente_formatado', fn (OrdemServico $model) =>
                 "{$model->equipamento->cliente->nome}"
             )
             ->add('equipamento_formatado', fn (OrdemServico $model) =>
@@ -112,7 +112,7 @@ final class OrdemServicoTable extends PowerGridComponent
                 ->searchable()
                 ->sortable(),
             Column::action('Ação'),
-            Column::make('Cliente', 'cliente')
+            Column::make('Cliente', 'cliente_formatado')
                 ->searchable()
                 ->sortable(),
             Column::make('Equipamento', 'equipamento_formatado')
@@ -159,11 +159,28 @@ final class OrdemServicoTable extends PowerGridComponent
         ];
     }
 
+    public function relationSearch(): array
+    {
+        return [
+            'equipamento' => [
+                'marca',
+                'modelo',
+                'serial',
+                'tipo',
+                'tipo_posse',
+            ],
+            'equipamento.cliente' => [
+                'nome',
+                'cnpj',
+            ],
+        ];
+    }
+
     public function filters(): array
     {
         return [
-            Filter::inputText('cliente')->operators([]),
-            Filter::inputText('equipamento_formatado')->operators([]),
+            Filter::inputText('cliente_formatado')->operators([])->filterRelation('equipamento.cliente', 'nome'),
+            Filter::inputText('equipamento_formatado')->operators([])->filterRelation('equipamento', 'marca'),
             Filter::select('status')
                 ->dataSource(collect(StatusOs::cases())->map(fn($tipo) => [
                     'value' => $tipo->value,
@@ -179,14 +196,14 @@ final class OrdemServicoTable extends PowerGridComponent
         return [
             Button::add('editar-os')
                 ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->openModal('modal.ordem-servico', [
                     'id' => $os->id,
                 ])
             ,
             Button::add('deletar-os')
                 ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->dispatch('delete', ['os' => $os])
             ,
         ];

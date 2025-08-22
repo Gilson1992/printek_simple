@@ -41,6 +41,10 @@ const alertaDelete = (id, message, eventName = 'deleteRow') => {
         showCancelButton: true,
         cancelButtonText: 'Cancelar',
         confirmButtonText: 'Sim',
+        customClass: {
+            confirmButton: "btn bg-orange",
+        },
+        // buttonsStyling: false,
         focusCancel: true,
     }).then((result) => {
         if (result.isConfirmed) {

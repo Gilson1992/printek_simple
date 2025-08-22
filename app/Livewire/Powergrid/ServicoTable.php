@@ -45,7 +45,7 @@ final class ServicoTable extends PowerGridComponent
         return [
             Button::add('cadastrar-servico')
                 ->slot('Cadastrar Serviço')
-                ->class('btn btn-primary mt-2 mr-2 text-bold')
+                ->class('btn btn-orange mt-2 mr-2 text-bold')
                 ->openModal('modal.servico', []),
         ];
     }
@@ -108,14 +108,14 @@ final class ServicoTable extends PowerGridComponent
         return [
             Button::add('editar-servico')
                 ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->openModal('modal.servico', [
                     'id' => $servico->id,
                 ])
             ,
             Button::add('deletar-servico')
                 ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->dispatch('delete', ['servico' => $servico])
             ,
         ];

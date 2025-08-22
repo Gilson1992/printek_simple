@@ -46,7 +46,7 @@ final class EquipamentoTable extends PowerGridComponent
         return [
             Button::add('cadastrar-equipamento')
                 ->slot('Cadastrar Equipamento')
-                ->class('btn btn-primary mt-2 mr-2 text-bold')
+                ->class('btn btn-orange mt-2 mr-2 text-bold')
                 ->openModal('modal.equipamento', []),
         ];
     }
@@ -60,7 +60,7 @@ final class EquipamentoTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
-            ->add('cliente_id', fn (Equipamento $model) => $model->cliente->nome)
+            ->add('cliente_formatado', fn (Equipamento $model) => $model->cliente->nome)
             ->add('tipo')
             ->add('tipo_posse')
             ->add('marca')
@@ -77,7 +77,7 @@ final class EquipamentoTable extends PowerGridComponent
             Column::make('ID', 'id')
                 ->searchable()
                 ->sortable(),
-            Column::make('ID Cliente', 'cliente_id')
+            Column::make('Cliente', 'cliente_formatado')
                 ->searchable()
                 ->sortable(),
             Column::make('Tipo', 'tipo')
@@ -107,10 +107,20 @@ final class EquipamentoTable extends PowerGridComponent
         ];
     }
 
+    public function relationSearch(): array
+    {
+        return [
+            'cliente' => [
+                'nome',
+                'cnpj',
+            ],
+        ];
+    }
+
     public function filters(): array
     {
         return [
-            Filter::inputText('cliente_id')->operators([])->filterRelation('cliente', 'nome'),
+            Filter::inputText('cliente_formatado')->operators([])->filterRelation('cliente', 'nome'),
             Filter::select('tipo')
                 ->dataSource(collect(Tipo::cases())->map(fn($tipo) => [
                     'value' => $tipo->value,
@@ -138,14 +148,14 @@ final class EquipamentoTable extends PowerGridComponent
         return [
             Button::add('editar-equipamento')
                 ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->openModal('modal.equipamento', [
                     'id' => $equipamento->id,
                 ])
             ,
             Button::add('deletar-equipamento')
                 ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->dispatch('delete', ['equipamento' => $equipamento])
             ,
         ];

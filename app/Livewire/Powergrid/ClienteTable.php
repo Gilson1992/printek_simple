@@ -45,7 +45,7 @@ final class ClienteTable extends PowerGridComponent
         return [
             Button::add('cadastrar-cliente')
                 ->slot('Cadastrar Cliente')
-                ->class('btn btn-primary mt-2 mr-2 text-bold')
+                ->class('btn btn-orange mt-2 mr-2 text-bold')
                 ->openModal('modal.cliente', []),
         ];
     }
@@ -149,14 +149,14 @@ final class ClienteTable extends PowerGridComponent
         return [
             Button::add('editar-cliente')
                 ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->openModal('modal.cliente', [
                     'id' => $cliente->id,
                 ])
             ,
             Button::add('deletar-cliente')
                 ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->dispatch('delete', ['cliente' => $cliente])
             ,
         ];

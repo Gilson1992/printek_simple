@@ -184,12 +184,12 @@ class OrdemServico extends ModalComponent
             $this->dispatch('reloadPowergrid');
 
         } catch (\Throwable $e) {
-            Log::error('Erro ao salvar OS', [
-                'mensagem' => $e->getMessage(),
-                'dados'    => $data,
-                'servicos' => $this->servicos,
-                'pecas'    => $this->pecas,
-            ]);
+            // Log::error('Erro ao salvar OS', [
+            //     'mensagem' => $e->getMessage(),
+            //     'dados'    => $data,
+            //     'servicos' => $this->servicos,
+            //     'pecas'    => $this->pecas,
+            // ]);
             $this->js("alertaFalha('Erro ao salvar OS. Tente novamente.')");
         }
     }

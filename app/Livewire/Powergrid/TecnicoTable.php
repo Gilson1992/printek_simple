@@ -46,7 +46,7 @@ final class TecnicoTable extends PowerGridComponent
         return [
             Button::add('cadastrar-tecnico')
                 ->slot('Cadastrar Técnico')
-                ->class('btn btn-primary mt-2 mr-2 text-bold')
+                ->class('btn btn-orange mt-2 mr-2 text-bold')
                 ->openModal('modal.tecnico', []),
         ];
     }
@@ -113,14 +113,14 @@ final class TecnicoTable extends PowerGridComponent
         return [
             Button::add('editar-tecnico')
                 ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->openModal('modal.tecnico', [
                     'id' => $tecnico->id,
                 ])
             ,
             Button::add('deletar-tecnico')
                 ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->dispatch('delete', ['tecnico' => $tecnico])
             ,
         ];
