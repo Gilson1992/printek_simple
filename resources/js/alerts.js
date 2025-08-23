@@ -22,6 +22,18 @@ const alertaFalha = (message) => {
     });
 };
 
+const alertaAviso = (message) => {
+    Swal.fire({
+        icon: 'warning',
+        html: message,
+        toast: true,
+        position: 'top-end',
+        timer: 2500,
+        timerProgressBar: true,
+        showConfirmButton: false,
+    });
+};
+
 const alertaDelete = (id, message, eventName = 'deleteRow') => {
     Swal.fire({
         icon: 'warning',
@@ -29,6 +41,10 @@ const alertaDelete = (id, message, eventName = 'deleteRow') => {
         showCancelButton: true,
         cancelButtonText: 'Cancelar',
         confirmButtonText: 'Sim',
+        customClass: {
+            confirmButton: "btn bg-orange",
+        },
+        // buttonsStyling: false,
         focusCancel: true,
     }).then((result) => {
         if (result.isConfirmed) {
@@ -37,4 +53,4 @@ const alertaDelete = (id, message, eventName = 'deleteRow') => {
     });
 };
 
-export { alertaSucesso, alertaFalha, alertaDelete };
+export { alertaSucesso, alertaFalha, alertaAviso, alertaDelete };

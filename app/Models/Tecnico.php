@@ -2,25 +2,21 @@
 
 namespace App\Models;
 
+use App\Enums\Disponibilidade;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
 class Tecnico extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'tecnico_id',
-        'nome', 
-        'contato', 
-        'disponibilidade',
-    ];
+    protected $table = 'tecnicos';
 
-     protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
+    protected $fillable = [
+        'matricula',
+        'nome',
+        'contato',
+        'disponibilidade',
     ];
 
     public function user()

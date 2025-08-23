@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Disponibilidade;
 use App\Models\Tecnico;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TecnicoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $tecnicos = Tecnico::latest()->paginate(10);
@@ -17,49 +16,63 @@ class TecnicoController extends Controller
         return view('tecnicos.index', compact('tecnicos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function paginate(Request $request)
+    {
+        $search = $request->input('search', '');
+
+        $disponiveis = Tecnico::where('disponibilidade', Disponibilidade::Disponivel)
+            ->when($search, fn($q) => $q->where('nome', 'like', "%{$search}%"))
+            ->get()
+            ->map(fn($tecnico) => [
+                'id' => $tecnico->id,
+                'text' => $tecnico->nome,
+            ]);
+
+        $emAtendimento = Tecnico::where('disponibilidade', Disponibilidade::EmAtendimento)
+            ->when($search, fn($q) => $q->where('nome', 'like', "%{$search}%"))
+            ->get()
+            ->map(fn($tecnico) => [
+                'id' => $tecnico->id,
+                'text' => $tecnico->nome,
+            ]);
+
+        return response()->json([
+            [
+                'text' => 'Técnicos Disponíveis',
+                'children' => $disponiveis,
+            ],
+            [
+                'text' => 'Técnicos em Atendimento',
+                'children' => $emAtendimento,
+            ],
+        ]);
+    }
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

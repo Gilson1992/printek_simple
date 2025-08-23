@@ -3,31 +3,32 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
 class Equipamento extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'equipamentos';
+
     protected $fillable = [
-        'cliente_id',
         'tipo',
+        'tipo_posse',
         'marca',
         'modelo',
         'serial',
         'contador',
-        'tipo_posse',
         'observacao',
     ];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
-    ];
-    public function cliente()
+    public function clientes()
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsToMany(Cliente::class, 'cliente_equipamento')
+                    ->withTimestamps();
+    }
+
+    public function ordensServico()
+    {
+        return $this->hasMany(OrdemServico::class);
     }
 }

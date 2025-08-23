@@ -10,7 +10,30 @@
     @livewire('wire-elements-modal')
     @wireUiScripts
     @vite(['resources/js/app.js'])
-    @livewireStyles
+    {{-- @livewireStyles --}}
+
+    <style>
+        .btn-orange {
+                color: #fff;
+                background-color: #fc7d14 !important;
+                border-color: #fc7d14 !important;
+                box-shadow: none;
+                font-weight: bolder;
+            }
+
+            .btn:hover, .btn:active {
+                border-color: #0000 !important;
+                color: #212529 !important;
+            }
+
+            .btn:focus {
+                border-color: #0000 !important;
+            }
+
+            .btn:not(:disabled):not(.disabled):active, .btn-orange.disabled, .btn-orange:disabled {
+                border-color: #0000 !important;
+            }
+    </style>
 @stop
 
 @section('classes_body', $layoutHelper->makeBodyClasses())

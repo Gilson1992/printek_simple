@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Powergrid;
 
+use App\Helpers\PowerGridThemes\TailwindHeaderFixed;
 use App\Models\Cliente;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -15,6 +16,11 @@ final class ClienteTable extends PowerGridComponent
     protected $listeners = [
         'reloadPowergrid',
     ];
+
+    public function customThemeClass(): ?string
+    {
+        return TailwindHeaderFixed::class;
+    }
 
     public function reloadPowergrid()
     {
@@ -39,7 +45,7 @@ final class ClienteTable extends PowerGridComponent
         return [
             Button::add('cadastrar-cliente')
                 ->slot('Cadastrar Cliente')
-                ->class('btn btn-primary mt-2')
+                ->class('btn btn-orange mt-2 mr-2 text-bold')
                 ->openModal('modal.cliente', []),
         ];
     }
@@ -63,18 +69,16 @@ final class ClienteTable extends PowerGridComponent
                     substr($c->cnpj, 12, 2)
                     : ($c->cnpj ?? '')
             )
-            ->add('contato', fn(Cliente $c) =>
-                strlen($c->contato ?? '') === 11
-                    ? '(' . substr($c->contato, 0, 2) . ') ' .
-                    substr($c->contato, 2, 5) . '-' .
-                    substr($c->contato, 7, 4)
-                    : ($c->contato ?? '')
-            )
+            ->add('contato', fn(Cliente $c) => match (strlen($c->contato ?? '')) {
+                11 => '(' . substr($c->contato, 0, 2) . ') ' . substr($c->contato, 2, 5) . '-' . substr($c->contato, 7, 4),
+                10 => '(' . substr($c->contato, 0, 2) . ') ' . substr($c->contato, 2, 4) . '-' . substr($c->contato, 6, 4),
+                default => $c->contato ?? '',
+            })
             ->add('email')
             ->add('endereco')
             ->add('observacao')
             ->add('ativo')
-            ->add('created_at_formatted', fn (Cliente $model) => 
+            ->add('created_at_formatado', fn (Cliente $model) => 
                 Carbon::parse($model->created_at)->format('d/m/Y')
             );
     }
@@ -111,8 +115,7 @@ final class ClienteTable extends PowerGridComponent
                 )
                 ->searchable()
                 ->sortable(),
-
-            Column::make('Criado Em', 'created_at_formatted', 'created_at')
+            Column::make('Criado Em', 'created_at_formatado', 'created_at')
                 ->searchable(),
             Column::action('Ação')
         ];
@@ -130,12 +133,12 @@ final class ClienteTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('nome'),
-            Filter::inputText('cnpj'),
-            Filter::inputText('contato'),
-            Filter::inputText('email'),
-            Filter::datepicker('created_at_formatted', 'created_at'),
+            Filter::inputText('nome')->operators([]),
+            Filter::inputText('cnpj')->operators([]),
+            Filter::inputText('contato')->operators([]),
+            Filter::inputText('email')->operators([]),
             Filter::boolean('ativo', 'ativo')->label('Sim', 'Não'),
+            Filter::datepicker('created_at_formatado', 'created_at'),
         ];
     }
 
@@ -144,14 +147,14 @@ final class ClienteTable extends PowerGridComponent
         return [
             Button::add('editar-cliente')
                 ->slot('<i class="fa fa-lg fa-fw fa-pen"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->openModal('modal.cliente', [
                     'id' => $cliente->id,
                 ])
             ,
             Button::add('deletar-cliente')
                 ->slot('<i class="fa fa-lg fa-fw fa-trash"></i>')
-                ->class('btn btn-xs text-primary')
+                ->class('btn btn-xs text-orange')
                 ->dispatch('delete', ['cliente' => $cliente])
             ,
         ];
@@ -173,7 +176,7 @@ final class ClienteTable extends PowerGridComponent
         if ($result) {
             $this->js("alertaSucesso('<b>$cliente->nome</b> excluído com sucesso')");
         } else {
-            $this->js("alertaFalha('Erro ao excluir <b>Cliente</b>')");
+            $this->js("alertaFalha('Erro ao excluir <b>$cliente->nome</b>')");
         }
     }
 

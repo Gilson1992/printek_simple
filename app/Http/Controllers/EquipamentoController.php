@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Equipamento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EquipamentoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $equipamentos = Equipamento::latest()->paginate(10); 
@@ -17,49 +15,48 @@ class EquipamentoController extends Controller
         return view('equipamentos.index', compact('equipamentos')); 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function paginate(Request $request)
+    {
+        $q = $request->search;
+
+        $result = Equipamento::join('clientes', 'equipamentos.cliente_id', '=', 'clientes.id')
+            ->select('equipamentos.id', DB::raw("CONCAT(clientes.nome, ' (', equipamentos.marca, ' - ', equipamentos.modelo, ')') as text"))
+            ->where(function ($query) use ($q) {
+                $query->where('clientes.nome', 'like', "%$q%")
+                    ->orWhere('equipamentos.marca', 'like', "%$q%")
+                    ->orWhere('equipamentos.modelo', 'like', "%$q%");
+            })
+            ->orderBy('clientes.nome')
+            ->paginate(10);
+
+        return response()->json($result);
+    }
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
