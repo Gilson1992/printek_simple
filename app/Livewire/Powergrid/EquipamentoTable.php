@@ -60,7 +60,9 @@ final class EquipamentoTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
-            ->add('cliente_formatado', fn (Equipamento $model) => $model->cliente->nome)
+            ->add('cliente_formatado', fn(Equipamento $equipamento) =>
+                optional($equipamento->clientes()->first())->nome ?? '-'
+            )
             ->add('tipo')
             ->add('tipo_posse')
             ->add('marca')
@@ -110,7 +112,7 @@ final class EquipamentoTable extends PowerGridComponent
     public function relationSearch(): array
     {
         return [
-            'cliente' => [
+            'clientes' => [
                 'nome',
                 'cnpj',
             ],
@@ -120,7 +122,7 @@ final class EquipamentoTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('cliente_formatado')->operators([])->filterRelation('cliente', 'nome'),
+            Filter::inputText('cliente_formatado')->operators([])->filterRelation('clientes', 'nome'),
             Filter::select('tipo')
                 ->dataSource(collect(Tipo::cases())->map(fn($tipo) => [
                     'value' => $tipo->value,

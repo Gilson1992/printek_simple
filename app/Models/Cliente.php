@@ -23,6 +23,7 @@ class Cliente extends Model
 
     public function equipamentos()
     {
-        return $this->hasMany(Equipamento::class);
+        return $this->belongsToMany(Equipamento::class, 'cliente_equipamento')
+                    ->withTimestamps();
     }
 }

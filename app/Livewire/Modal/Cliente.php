@@ -16,6 +16,47 @@ class Cliente extends ModalComponent
     public $endereco;
     public $observacao;
 
+    public function rules()
+    {
+        $cleanCnpj = preg_replace('/\D/', '', $this->cnpj ?? '');
+        $cleanContato = preg_replace('/\D/', '', $this->contato ?? '');
+
+        return [
+            'nome'     => 'required|string|max:150',
+            'cnpj' => [
+            'nullable',
+                function ($attribute, $value, $fail) use ($cleanCnpj) {
+                    if ($cleanCnpj && strlen($cleanCnpj) !== 14) {
+                        $fail('O CNPJ deve conter exatamente 14 números.');
+                    }
+                },
+            ],
+
+            'contato' => [
+                'nullable',
+                function ($attribute, $value, $fail) use ($cleanContato) {
+                    if ($cleanContato && !in_array(strlen($cleanContato), [10, 11])) {
+                        $fail('O número de contato deve conter 10 (fixo) ou 11 (celular) dígitos.');
+                    }
+                },
+            ],
+            'email'    => 'nullable|email|max:180|unique:clientes,email,' . $this->idCliente . ',id,deleted_at,NULL',
+            'endereco' => 'nullable|string|max:255',
+            'observacao' => 'nullable|string|max:65535',
+        ];
+    }
+
+    protected function messages()
+    {
+        return [
+            'nome.required' => 'O nome é obrigatório.',
+            'cnpj.digits'   => 'O CNPJ deve conter 14 números.',
+            'cnpj.unique'   => 'Este CNPJ já está cadastrado.',
+            'contato'       => 'O número de contato deve conter entre 10 e 11 dígitos (com DDD).',
+            'email'         => 'Insira um e-mail válido (email@domino.com).',
+        ];
+    }
+
     public function mount($id = null)
     {
         if ($id) {
@@ -33,6 +74,8 @@ class Cliente extends ModalComponent
 
     public function salvarCliente()
     {
+        $this->validate();
+
         $cleanCnpj    = preg_replace('/\D/', '', $this->cnpj) ?: null;
         $cleanContato = preg_replace('/\D/', '', $this->contato) ?: null;
         $cleanEmail   = trim($this->email) ?: null;

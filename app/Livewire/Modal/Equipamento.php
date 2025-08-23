@@ -22,13 +22,41 @@ class Equipamento extends ModalComponent
         'setIdCliente',
     ];
 
+    public function rules()
+    {
+        return [
+            'tipo' => 'required|string|max:50',
+            'tipo_posse' => 'required|string|max:20',
+            'marca' => 'required|string|max:50',
+            'modelo' => 'required|string|max:100',
+            'serial' => 'required|string|max:100|unique:equipamentos,serial,' . $this->idEquipamento,
+            'contador' => 'nullable|integer|min:0',
+            'observacao' => 'nullable|string|max:500',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'cliente_id.required' => 'Selecione um cliente.',
+            'tipo.required' => 'Informe o tipo do equipamento.',
+            'tipo_posse.required' => 'Informe o tipo de posse.',
+            'marca.required' => 'Informe a marca.',
+            'modelo.required' => 'Informe o modelo.',
+            'serial.required' => 'Informe o número de série.',
+            'serial.unique' => 'Este número de série já está cadastrado.',
+            'contador.integer' => 'O contador deve ser um número inteiro.',
+            'contador.min' => 'O contador não pode ser negativo.',
+        ];
+    }
+
     public function mount($id = null)
     {
         if ($id) {
             $this->idEquipamento = $id;
             $equipamento = EquipamentoModel::findOrFail($id);
 
-            $this->cliente_id = $equipamento->cliente_id;
+            $this->cliente_id = optional($equipamento->clientes()->first())->id;
             $this->tipo       = $equipamento->tipo;
             $this->tipo_posse = $equipamento->tipo_posse;
             $this->marca      = $equipamento->marca;
@@ -46,8 +74,9 @@ class Equipamento extends ModalComponent
 
     public function salvarEquipamento()
     {
+        $this->validate();
+
         $data = [
-            'cliente_id' => $this->cliente_id,
             'tipo'       => $this->tipo,
             'tipo_posse' => $this->tipo_posse,
             'marca'      => $this->marca,
@@ -59,12 +88,18 @@ class Equipamento extends ModalComponent
 
         try {
             if ($this->idEquipamento) {
-                EquipamentoModel::find($this->idEquipamento)->update($data);
-                $this->js("alertaSucesso('Equipamento editado com sucesso!')");
+                $equipamento = EquipamentoModel::findOrFail($this->idEquipamento);
+                $equipamento->update($data);
             } else {
-                EquipamentoModel::create($data);
-                $this->js("alertaSucesso('Equipamento cadastrado com sucesso!')");
+                $equipamento = EquipamentoModel::create($data);
             }
+
+            if ($this->cliente_id) {
+                $equipamento->clientes()->syncWithoutDetaching([$this->cliente_id]);
+            }
+
+            $mensagem = $this->idEquipamento ? 'Equipamento editado com sucesso!' : 'Equipamento cadastrado com sucesso!';
+            $this->js("alertaSucesso('$mensagem')");
 
             $this->dispatch('closeModal');
             $this->dispatch('reloadPowergrid');

@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('equipamentos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
             $table->string('tipo', 50);
             $table->string('tipo_posse', 20);
             $table->string('marca', 50);

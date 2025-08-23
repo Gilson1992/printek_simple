@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\{Tipo, TipoPosse};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
@@ -13,7 +12,6 @@ class Equipamento extends Model
     protected $table = 'equipamentos';
 
     protected $fillable = [
-        'cliente_id',
         'tipo',
         'tipo_posse',
         'marca',
@@ -23,9 +21,10 @@ class Equipamento extends Model
         'observacao',
     ];
 
-    public function cliente()
+    public function clientes()
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsToMany(Cliente::class, 'cliente_equipamento')
+                    ->withTimestamps();
     }
 
     public function ordensServico()

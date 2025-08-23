@@ -69,13 +69,11 @@ final class ClienteTable extends PowerGridComponent
                     substr($c->cnpj, 12, 2)
                     : ($c->cnpj ?? '')
             )
-            ->add('contato', fn(Cliente $c) =>
-                strlen($c->contato ?? '') === 11
-                    ? '(' . substr($c->contato, 0, 2) . ') ' .
-                    substr($c->contato, 2, 5) . '-' .
-                    substr($c->contato, 7, 4)
-                    : ($c->contato ?? '')
-            )
+            ->add('contato', fn(Cliente $c) => match (strlen($c->contato ?? '')) {
+                11 => '(' . substr($c->contato, 0, 2) . ') ' . substr($c->contato, 2, 5) . '-' . substr($c->contato, 7, 4),
+                10 => '(' . substr($c->contato, 0, 2) . ') ' . substr($c->contato, 2, 4) . '-' . substr($c->contato, 6, 4),
+                default => $c->contato ?? '',
+            })
             ->add('email')
             ->add('endereco')
             ->add('observacao')

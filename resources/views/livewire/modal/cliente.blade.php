@@ -14,7 +14,7 @@
                     <div class="row">
                         <div class="col-8">
                             <x-adminlte-input
-                                label="Nome"
+                                label="Nome *"
                                 placeholder="Nome do cliente..."
                                 wire:model.live="nome"
                                 name="nome"
@@ -52,7 +52,10 @@
                                 type="text"
                                 igroup-size="md"
                                 x-data
-                                x-init="Inputmask('(99) 99999-9999').mask($el)"
+                                x-init="Inputmask({
+                                    mask: ['(99) 99999-9999', '(99) 9999-9999'],
+                                    keepStatic: true
+                                }).mask($el)"
                             >
                             </x-adminlte-input>
                         </div>

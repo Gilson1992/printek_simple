@@ -116,7 +116,7 @@
                                 wire:model.live="contador"
                                 name="contador"
                                 id="contador"
-                                type="text"
+                                type="number"
                                 igroup-size="md"
                             >
                             </x-adminlte-input>
